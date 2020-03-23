@@ -52,9 +52,17 @@ public class newStar {
         int pixel;                     
         pixel = img.getRGB(child.x, child.y);
         int r = (pixel>>16) & 0xff;
-        if(r != 255)
-            System.out.println("RR:"+r);
-        return (256 - r);
+        
+        //Ulestirme Cabasi!
+       /* double value;  
+        int x1 = child.x;
+        int x2 = End.x;
+        int y1 = child.y;
+        int y2 = End.y;          
+        value = Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2));
+        r =  (int) value * r;*/
+       return 0;
+        //return 256-r;
        }
        
        private double h(Point child){
@@ -67,7 +75,10 @@ public class newStar {
         int y2 = End.y;
         normalizer =Math.sqrt(Math.pow(0-width,2)+Math.pow(0-height, 2));       
         visual = Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2));
-        value = 256 * visual/normalizer; //0-256 arası bir heureistic deger doner.      
+        value = visual;    
+        
+        //256 * visual/normalizer; //0-256 arası bir heureistic deger doner.  
+        
         return value;
        }
        
@@ -114,7 +125,7 @@ public class newStar {
        public ArrayList<Point> currentList = new ArrayList<>();
        public void algoRun(){
          notVisited.add(new Node(Start));
-         int maxIter = 30000;  //10K
+         int maxIter = 10000;  //10K
          int iterNo = 0;
          
          while(notVisited.size()>0){
@@ -177,6 +188,7 @@ public class newStar {
              childeren[7].pos = new Point(current.pos.x-1, current.pos.y);
              
              for(Node track : childeren){
+                 
                  if(visited.indexOf(track) == -1 &&   //Cocuk Node Visited listesinde yoksa
                      track.pos.x > -1 && track.pos.y > -1 &&  //VE Cocuk Node legal bir adresteyse
                      track.pos.x < width && track.pos.y < height    ){  
@@ -185,8 +197,8 @@ public class newStar {
                      track.f = track.g + track.h;                     
                      boolean breakOut = false; //Dongu kirma degiskeni.
                      for (int i = 0; i < notVisited.size(); i++) {                         
-                         if(track.pos == notVisited.get(i).pos 
-                                 && track.f > notVisited.get(i).f){
+                         if(track.pos.equals(notVisited.get(i).pos)  
+                                 && track.g > notVisited.get(i).g){
                              breakOut = true;
                              break;
                          }
@@ -194,7 +206,9 @@ public class newStar {
                      if(breakOut) continue; //notVisited'ta varsa continue.
                      track.parent = current;
                      notVisited.add(track);
-                 }                 
+                 }  
+                 System.out.println("Childeren"+track.h); 
+                 
              }        
          }
                      

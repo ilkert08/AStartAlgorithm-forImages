@@ -61,11 +61,10 @@ public class newStar {
         int y2 = End.y;          
         value = Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2));
         r =  (int) value * r;*/
-       return 0;
-        //return 256-r;
+        return (256-r);
        }
        
-       private double h(Point child){
+       private double h(Point child, Double gg){
         double value;  
         double normalizer;
         double visual;
@@ -75,11 +74,11 @@ public class newStar {
         int y2 = End.y;
         normalizer =Math.sqrt(Math.pow(0-width,2)+Math.pow(0-height, 2));       
         visual = Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2));
-        value = visual;    
+        value = visual; 
         
-        //256 * visual/normalizer; //0-256 arası bir heureistic deger doner.  
-        
-        return value;
+         //256 * visual/normalizer; //0-256 arası bir heureistic deger doner.  
+        double xy = visual * gg / normalizer;
+        return xy;
        }
        
        private void setColor(){
@@ -108,6 +107,18 @@ public class newStar {
                pop = currentList.get(i);
                img2.setRGB(pop.x, pop.y , p);
            }
+           
+           
+           a = 250; 
+           r = 255; 
+           g = 255; 
+           b = 0;
+           
+           p = (a<<24) | (r<<16) | (g<<8) | b;
+           for (int i = 0; i < childList.size(); i++) {
+               pop = childList.get(i);
+               img2.setRGB(pop.x, pop.y , p);
+           }
                
         //write image 
         try
@@ -123,9 +134,14 @@ public class newStar {
        
        
        public ArrayList<Point> currentList = new ArrayList<>();
+       public ArrayList<Point> childList = new ArrayList<>();
        public void algoRun(){
+         
          notVisited.add(new Node(Start));
-         int maxIter = 10000;  //10K
+         notVisited.get(0).g = 0;
+         notVisited.get(0).h = 0;
+         notVisited.get(0).f = 0;
+         int maxIter = 20000;  //10K
          int iterNo = 0;
          
          while(notVisited.size()>0){
@@ -143,6 +159,22 @@ public class newStar {
              
              System.out.println("Current:"+current.pos);
              System.out.println("Value:"+current.h);
+             
+                 
+                     
+            System.out.println("Pos:"+current.pos);
+            System.out.println("F:"+current.f);
+            System.out.println("G:"+current.g);
+            System.out.println("H:"+current.h);   
+            System.out.println("XXXXXXXXXXXXXXXXXXXXXXX");
+            System.out.println("");
+                     
+                    
+               
+                 
+                 
+                 
+             
              currentList.add(current.pos);
              if(iterNo > maxIter){
                  System.out.println("Max Iteration!");
@@ -188,12 +220,19 @@ public class newStar {
              childeren[7].pos = new Point(current.pos.x-1, current.pos.y);
              
              for(Node track : childeren){
-                 
-                 if(visited.indexOf(track) == -1 &&   //Cocuk Node Visited listesinde yoksa
+                 boolean passage = false;
+                 for (int i = 0; i < visited.size(); i++) {
+                     if(visited.get(i).pos.equals(track.pos)){
+                         passage = true;
+                         break;
+                     }
+                     
+                 }
+                 if( passage != true &&  //Cocuk Node Visited listesinde yoksa
                      track.pos.x > -1 && track.pos.y > -1 &&  //VE Cocuk Node legal bir adresteyse
                      track.pos.x < width && track.pos.y < height    ){  
                      track.g = current.g + g(track.pos);
-                     track.h = h(track.pos);
+                     track.h = h(track.pos , track.g);
                      track.f = track.g + track.h;                     
                      boolean breakOut = false; //Dongu kirma degiskeni.
                      for (int i = 0; i < notVisited.size(); i++) {                         
@@ -203,11 +242,15 @@ public class newStar {
                              break;
                          }
                      }
-                     if(breakOut) continue; //notVisited'ta varsa continue.
+                     if(breakOut) {
+                         breakOut = false;
+                         continue;
+                     } //notVisited'ta varsa continue.
                      track.parent = current;
                      notVisited.add(track);
+                     childList.add(track.pos);
                  }  
-                 System.out.println("Childeren"+track.h); 
+                 //System.out.println("Childeren"+track.h); 
                  
              }        
          }

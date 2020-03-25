@@ -17,7 +17,7 @@ public class newStar {
     public int height;
     private ArrayList<Node> visited;
     private ArrayList<Node> notVisited;
-    
+    public int sayac = 0;
    public newStar(Point start, Point end){
        this.Start=start;
        this.End = end;
@@ -141,7 +141,7 @@ public class newStar {
          notVisited.get(0).g = 0;
          notVisited.get(0).h = 0;
          notVisited.get(0).f = 0;
-         int maxIter = 20000;  //10K
+         int maxIter = 50000;  //10K
          int iterNo = 0;
          
          while(notVisited.size()>0){
@@ -184,7 +184,7 @@ public class newStar {
              }
              notVisited.remove(currentIndex);
              visited.add(current);
-             
+                  
              if(current.pos.equals(End)){ //Sonuç bulduysa
                  
                  System.out.println("Sonuc Bulundu");                
@@ -201,8 +201,9 @@ public class newStar {
         while(temp2.parent!=null){
              System.out.println("(x,y):("+temp2.pos.x+","+temp2.pos.y+")");
               temp2 = temp2.parent;
-             // setColor(temp2.pos);
+             
          }
+                setColor();
                  return;
              }
              
@@ -221,13 +222,16 @@ public class newStar {
              
              for(Node track : childeren){
                  boolean passage = false;
-                 for (int i = 0; i < visited.size(); i++) {
+                 for (int i = 0; i < visited.size(); i++) {                     
                      if(visited.get(i).pos.equals(track.pos)){
                          passage = true;
                          break;
-                     }
-                     
-                 }
+                     }         
+                 }                
+                 
+                 if(passage)
+                     continue;                         
+                 
                  if( passage != true &&  //Cocuk Node Visited listesinde yoksa
                      track.pos.x > -1 && track.pos.y > -1 &&  //VE Cocuk Node legal bir adresteyse
                      track.pos.x < width && track.pos.y < height    ){  
@@ -235,9 +239,11 @@ public class newStar {
                      track.h = h(track.pos , track.g);
                      track.f = track.g + track.h;                     
                      boolean breakOut = false; //Dongu kirma degiskeni.
+                     
+                     
                      for (int i = 0; i < notVisited.size(); i++) {                         
                          if(track.pos.equals(notVisited.get(i).pos)  
-                                 && track.g > notVisited.get(i).g){
+                                 && track.g >= notVisited.get(i).g){
                              breakOut = true;
                              break;
                          }
@@ -246,6 +252,8 @@ public class newStar {
                          breakOut = false;
                          continue;
                      } //notVisited'ta varsa continue.
+                     
+                     System.out.println("TRACK:"+track.pos);                   
                      track.parent = current;
                      notVisited.add(track);
                      childList.add(track.pos);

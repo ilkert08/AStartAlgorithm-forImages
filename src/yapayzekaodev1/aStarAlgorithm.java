@@ -250,7 +250,7 @@ public class aStarAlgorithm {
         return 5*value;              
       
     }
-    
+   /*
     public void algoRun(){
 
         boolean found = false; 
@@ -392,7 +392,7 @@ public class aStarAlgorithm {
         
 
         
-     }
+     } */
         
  }
     

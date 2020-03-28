@@ -2,10 +2,11 @@
 package yapayzekaodev1;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import javax.swing.text.Position;
 
 public class MinHeap {
-    public Node[] Heap; 
+    public ArrayList <Node> Heap; 
     public int size; 
     public int maxsize; 
     private int XX;
@@ -18,11 +19,8 @@ public class MinHeap {
         this.size = 0; 
         this.XX = width;
         this.YY = height;
-        Heap = new Node[this.maxsize + 1]; 
-        for (int i = 0; i < Heap.length; i++) {
-            Heap[i] = new Node();            
-        }
-        Heap[0].var = 0.0; 
+        Heap = new ArrayList<>();    //Node[this.maxsize + 1]; 
+        Heap.get(0).f = 0.0; 
     } 
     
     public int getSize(){
@@ -66,9 +64,9 @@ public class MinHeap {
     private void swap(int fpos, int spos) 
     { 
         Node tmp; 
-        tmp = Heap[fpos]; 
-        Heap[fpos] = Heap[spos]; 
-        Heap[spos] = tmp; 
+        tmp = Heap.get(fpos); 
+        Heap.set(fpos, Heap.get(spos)); 
+        Heap.set(spos,tmp); 
     } 
     int count2 = 0;
     // Function to heapify the node at pos 
@@ -77,15 +75,15 @@ public class MinHeap {
         System.out.println("pos:"+pos);
         // If the node is a non-leaf node and greater 
         // than any of its child 
-         System.out.println("Heap:"+Heap[1].var);
+        // System.out.println("Heap:"+Heap[1].var);
         
         if (!isLeaf(pos)) { 
-            if (Heap[pos].var > Heap[leftChild(pos)].var 
-                || Heap[pos].var > Heap[rightChild(pos)].var) { 
+            if (Heap.get(pos).f > Heap.get(leftChild(pos)).f 
+                || Heap.get(pos).f > Heap.get(rightChild(pos)).f) { 
   
                 // Swap with the left child and heapify 
                 // the left child 
-                if (Heap[leftChild(pos)].var < Heap[rightChild(pos)].var) { 
+                if (Heap.get(leftChild(pos)).f < Heap.get(rightChild(pos)).f) { 
                     swap(pos, leftChild(pos)); 
                     minHeapify(leftChild(pos)); 
                 } 
@@ -101,34 +99,29 @@ public class MinHeap {
     } 
   
     // Function to insert a node into the heap 
-    public void insert(double element, Point p, Node par) 
+    public void insert(Node element) 
     {   
-        if(p.x <XX-1 && p.y < YY-1){
-        if (size >= maxsize) {           
-            return; 
-        } 
+
         
-        Heap[++size].var = element; 
-        Heap[size].pos = p;
-        Heap[size].parent = par;
+        Heap.add(element);       
         int current = size; 
         
-        while (Heap[current].var < Heap[parent(current)].var) {            
+        while (Heap.get(current).f < Heap.get(parent(current)).var) {            
             swap(current, parent(current)); 
             current = parent(current); 
         } 
       }
-    } 
+     
   
     // Function to print the contents of the heap 
     public void print() 
     { 
-        for (int i = 1; i <= size / 2; i++) { 
+       /* for (int i = 1; i <= size / 2; i++) { 
             System.out.print(" PARENT : " + Heap[i] 
                              + " LEFT CHILD : " + Heap[2 * i] 
-                             + " RIGHT CHILD :" + Heap[2 * i + 1]); 
-            System.out.println(); 
-        } 
+                             + " RIGHT CHILD :" + Heap[2 * i + 1]); */
+            System.out.println("Bu fonksiyon su anda kullanilamamaktadir."); 
+         
     } 
   
     // Function to build the min heap using 
@@ -144,13 +137,13 @@ public class MinHeap {
     // element from the heap 
     public Node remove() 
     { 
-        Node popped = Heap[FRONT]; 
-        Heap[FRONT] = Heap[size--]; 
+        Node popped = Heap.get(FRONT); 
+        Heap.set(FRONT, Heap.get(size--)); 
         minHeapify(FRONT); 
         return popped; 
     } 
     
-    public Node[] takeArray(){
+    public ArrayList<Node> takeArray(){
         return Heap;
     }
     

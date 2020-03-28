@@ -56,14 +56,6 @@ public class newStar {
 
         // get blue 
         int a = pixel & 0xff;
-        //Ulestirme Cabasi!
-        /* double value;  
-        int x1 = child.x;
-        int x2 = End.x;
-        int y1 = child.y;
-        int y2 = End.y;          
-        value = Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2));
-        r =  (int) value * r;*/
         return r;
     }
 
@@ -81,7 +73,7 @@ public class newStar {
 
         //256 * visual/normalizer; //0-256 arası bir heureistic deger doner.  
         double xy = visual * gg / normalizer;
-        return value;
+        return xy;
     }
 
     private void setColor() {
@@ -142,18 +134,18 @@ public class newStar {
         while (notVisited.size() > 0) {
             iterNo++;
             System.out.println("Iter:" + iterNo);
+            hp.sort(notVisited); //Heapsort implementation denemesi.
             Node current = notVisited.get(0);
             int currentIndex = 0;
-            for (int i = 0; i < notVisited.size(); i++) {
+        
+           /* for (int i = 0; i < notVisited.size(); i++) {
                 if (notVisited.get(i).f < current.f) {
                     current = notVisited.get(i);
                     currentIndex = i;
 
                 }
-            }
+            }*/
 
-            System.out.println("Current:" + current.pos);
-            System.out.println("Value:" + current.h);
 
             System.out.println("Pos:" + current.pos);
             System.out.println("F:" + current.f);
@@ -184,15 +176,8 @@ public class newStar {
             ////////////////////////////////////////////////////////////////
             if (current.pos.equals(End)) { //Sonuç bulduysa
 
-                for (int i = 0; i < notVisited.size(); i++) {
-                    System.out.println("List:" + notVisited.get(i).pos);
-                    System.out.println("G:" + notVisited.get(i).g);
-                    System.out.println("");
-
-                }
-
                 System.out.println("Sonuc Bulundu");
-                System.out.println("K:" + current.pos);
+                System.out.println("SON:" + current.pos);
                 Node temp2 = new Node();
                 temp2.f = Double.MAX_VALUE;
                 for (Node temp : visited) {
@@ -274,8 +259,8 @@ public class newStar {
                     boolean breakOut = false; //Dongu kirma degiskeni.
 
                     for (int i = 0; i < notVisited.size(); i++) {
-                        if (track.pos.equals(notVisited.get(i).pos)
-                                && track.g >= notVisited.get(i).g) {
+                        if (track.g >= notVisited.get(i).g
+                                && track.pos.equals(notVisited.get(i).pos)) {
                             breakOut = true;
                             break;
                         }

@@ -12,7 +12,7 @@ public class YapayZekaOdev1 {
         //aStarAlgorithm algo = new aStarAlgorithm(new Point(40,10), new Point(80,130));
         //algo.algoRun();
   
-        newStar newAlgo = new newStar(new Point(75,15),new Point(63, 144));
+        newStar newAlgo = new newStar(new Point(75,15),new Point(235, 413));
         newAlgo.algoRun();
         
     }

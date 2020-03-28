@@ -39,11 +39,11 @@ public class HeapSort {
         int r = 2*i + 2; // right = 2*i + 2 
         
         // If left child is larger than root 
-        if (l < n && arr.get(l).var > arr.get(largest).var) 
+        if (l < n && arr.get(l).f > arr.get(largest).f) 
             largest = l; 
   
         // If right child is larger than largest so far 
-        if (r < n && arr.get(r).var > arr.get(largest).var) 
+        if (r < n && arr.get(r).f > arr.get(largest).f) 
             largest = r; 
   
         // If largest is not root 
@@ -65,7 +65,7 @@ public class HeapSort {
     { 
         int n = arr.size(); 
         for (int i=0; i<n; ++i) 
-            System.out.print(arr.get(i).pos+" "+arr.get(i).var); 
+            System.out.print(arr.get(i).pos+" "+arr.get(i).f); 
         System.out.println(); 
     } 
 }

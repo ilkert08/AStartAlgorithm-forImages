@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
-public class newStar {
+public class heaplessAStar {
 
     private final Point Start;
     private final Point End;
@@ -15,16 +15,17 @@ public class newStar {
     public int width;
     public int height;
     private ArrayList<Node> visited;
-    private MinHeap notVisited;
+    private ArrayList<Node> notVisited;
     private HeapSort hp;
     public int sayac = 0;
 
-    public newStar(Point start, Point end) {
+    public heaplessAStar(Point start, Point end) {
         this.Start = start;
         this.End = end;
         fileWorks();
         visited = new ArrayList<>();
-        notVisited = new MinHeap(100000);
+        notVisited = new ArrayList<>();
+        // hp = new HeapSort();
     }
 
     private void fileWorks() {
@@ -50,9 +51,10 @@ public class newStar {
         int r = (pixel >> 16) & 0xff;
 
         // get green 
-        // int g = (pixel >> 8) & 0xff;
+        int g = (pixel >> 8) & 0xff;
+
         // get blue 
-        //   int a = pixel & 0xff;
+        int a = pixel & 0xff;
         return r;
     }
 
@@ -109,14 +111,14 @@ public class newStar {
 
         //write image 
         try {
-            f = new File("reddit.png");
+            f = new File("redditpp.png");
             ImageIO.write(img2, "png", f);
         } catch (IOException e) {
             System.out.println(e);
         }
     }
 
-    public void endPrint() {
+    private void endPrint() {
         System.out.println("Sonuc Bulundu");
         Node temp2 = new Node();
         temp2.f = Double.MAX_VALUE;
@@ -150,7 +152,7 @@ public class newStar {
 
         }
         try {
-            f = new File("Final.png");
+            f = new File("Finaltt.png");
             ImageIO.write(img2, "png", f);
         } catch (IOException e) {
             System.out.println(e);
@@ -159,48 +161,44 @@ public class newStar {
         setColor();
     }
 
+    private void printCurrent(Node current) {
+        System.out.println("Pos:" + current.pos);
+        System.out.println("F:" + current.f);
+        System.out.println("G:" + current.g);
+        System.out.println("H:" + current.h);
+        System.out.println("XXXXXXXXXXXXXXXXXXXXXXX");
+        System.out.println("");
+    }
+
     public ArrayList<Point> currentList = new ArrayList<>();
     public ArrayList<Point> childList = new ArrayList<>();
 
     public void algoRun() {
-        System.out.println("Size" + notVisited.getSize());
-        notVisited.insert(new Node(Start, 0, 0, 0));
+
+        notVisited.add(new Node(Start));
+        notVisited.get(0).g = 0;
+        notVisited.get(0).h = 0;
+        notVisited.get(0).f = 0;
         int maxIter = 300000;  //10K
         int iterNo = 0;
-        System.out.println("Girdi mi");
 
-        while (notVisited.getSize() > 0) {
-            long startTime = System.nanoTime();
+        while (notVisited.size() > 0) {
             iterNo++;
             System.out.println("Iter:" + iterNo);
-            Node current = notVisited.remove();
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime);
-            System.out.println("D1:" + duration);
-            //notVisited.minHeap();
+            Node current = notVisited.get(0);
+            int currentIndex = 0;
 
-            /* for (int i = 0; i < notVisited.size(); i++) {
+            for (int i = 0; i < notVisited.size(); i++) {
                 if (notVisited.get(i).f < current.f) {
                     current = notVisited.get(i);
                     currentIndex = i;
-
                 }
-            }*/
-            
-            
+            }
 
- /*
-            System.out.println("Pos:" + current.pos);
-            System.out.println("F:" + current.f);
-            System.out.println("G:" + current.g);
-            System.out.println("H:" + current.h);
-            System.out.println("XXXXXXXXXXXXXXXXXXXXXXX");
-            System.out.println("");*/
- 
- 
- 
- 
-            /////////MAX ITERATION SITUATION///////////                                            
+            printCurrent(current);
+            currentList.add(current.pos);
+
+            /////////MAX ITERATION SITUATION///////////
             if (iterNo > maxIter) {
                 System.out.println("Max Iteration!");
                 System.out.println("size:" + currentList.size());
@@ -209,17 +207,15 @@ public class newStar {
             }
             /////////MAX ITERATION SITUATION///////////
 
-            currentList.add(current.pos);
+            notVisited.remove(currentIndex);
             visited.add(current);
 
             ///////////Sonuc Bulunmasi Halinde Yapilan Tek seferlik islemler.
             if (current.pos.equals(End)) { //Sonuç bulduysa
                 endPrint();
-                return;           
+                return;
             }
-            ///////////Sonuc Bulunmasi Halinde Yapilan Tek seferlik islemler.
-
-            
+            ///////////Sonuc Bulunmasi Halinde Yapilan Tek seferlik islemler.  
 
             Node childeren[] = new Node[8];
             for (int i = 0; i < childeren.length; i++) {
@@ -236,7 +232,6 @@ public class newStar {
 
             boolean locked[] = new boolean[8];
 
-            startTime = System.nanoTime();
             for (int i = 0; i < visited.size(); i++) {
                 if (visited.get(i).pos.equals(childeren[0].pos) && locked[0] != true) {
                     locked[0] = true;
@@ -264,29 +259,14 @@ public class newStar {
                 }
             }
 
-            endTime = System.nanoTime();
-            duration = (endTime - startTime);
-            System.out.println("D1.5:" + duration);
-
             int childIndex = 0;
             for (Node track : childeren) {
                 boolean passage = false;
-                /*   startTime = System.nanoTime();
-                
-                for (int i = 0; i < visited.size(); i++) {
-                    if (visited.get(i).pos.equals(track.pos)) {
-                        passage = true;
-                        break;
-                    }
-                }
-                endTime = System.nanoTime();
-                duration = (endTime - startTime);
-                System.out.println("D2:"+duration); */
+
                 if (locked[childIndex++] == true) {
                     passage = true;
                 }
 
-                startTime = System.nanoTime();
                 if (passage != true
                         && //Cocuk Node Visited listesinde yoksa
                         track.pos.x > -1 && track.pos.y > -1
@@ -295,10 +275,11 @@ public class newStar {
                     track.g = current.g + g(track.pos);
                     track.h = h(track.pos, track.g);
                     track.f = track.g + track.h;
-                    boolean breakOut = false; //Dongu kirma degiskeni.                    
-                    for (int i = 0; i < notVisited.getSize(); i++) {
-                        if (track.g >= notVisited.Heap.get(i).g
-                                && track.pos.equals(notVisited.Heap.get(i).pos)) {
+                    boolean breakOut = false; //Dongu kirma degiskeni.
+
+                    for (int i = 0; i < notVisited.size(); i++) {
+                        if (track.g >= notVisited.get(i).g
+                                && track.pos.equals(notVisited.get(i).pos)) {
                             breakOut = true;
                             break;
                         }
@@ -308,13 +289,10 @@ public class newStar {
                         continue;
                     } //notVisited'ta varsa continue.
 
-                    //System.out.println("TRACK:" + track.pos);
+                    System.out.println("TRACK:" + track.pos);
                     track.parent = current;
-                    notVisited.insert(track);
+                    notVisited.add(track);
                     childList.add(track.pos);
-                    endTime = System.nanoTime();
-                    duration = (endTime - startTime);
-                    System.out.println("D3:" + duration);
                 }
 
             }

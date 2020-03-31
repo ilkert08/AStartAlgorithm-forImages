@@ -9,17 +9,18 @@ public class MinHeap {
     public ArrayList <Node> Heap; 
     public int size; 
     public int maxsize; 
-    private int XX;
-    private int YY;
     private static final int FRONT = 1; 
   
-    public MinHeap(int maxsize, int width, int height) 
+    public MinHeap(int maxsize) 
     { 
         this.maxsize = maxsize; 
         this.size = 0; 
-        this.XX = width;
-        this.YY = height;
-        Heap = new ArrayList<>();    //Node[this.maxsize + 1]; 
+        Heap = new ArrayList<>(this.maxsize+1); 
+        for (int i = 0; i < this.maxsize+1; i++) {
+            Heap.add(new Node());
+            
+        }
+        Heap.add(new Node());
         Heap.get(0).f = 0.0; 
     } 
     
@@ -71,8 +72,7 @@ public class MinHeap {
     int count2 = 0;
     // Function to heapify the node at pos 
     private void minHeapify(int pos) 
-    { 
-        System.out.println("pos:"+pos);
+    {         
         // If the node is a non-leaf node and greater 
         // than any of its child 
         // System.out.println("Heap:"+Heap[1].var);
@@ -101,12 +101,10 @@ public class MinHeap {
     // Function to insert a node into the heap 
     public void insert(Node element) 
     {   
-
         
-        Heap.add(element);       
+        Heap.set(++size, element);        
         int current = size; 
-        
-        while (Heap.get(current).f < Heap.get(parent(current)).var) {            
+        while (Heap.get(current).f < Heap.get(parent(current)).f) {            
             swap(current, parent(current)); 
             current = parent(current); 
         } 
@@ -141,6 +139,11 @@ public class MinHeap {
         Heap.set(FRONT, Heap.get(size--)); 
         minHeapify(FRONT); 
         return popped; 
+    } 
+    
+    public Node getMin() 
+    { 
+        return Heap.get(FRONT);
     } 
     
     public ArrayList<Node> takeArray(){

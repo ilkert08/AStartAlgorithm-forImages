@@ -68,10 +68,10 @@ public class heaplessAStar {
         int y2 = End.y;
         normalizer = Math.sqrt(Math.pow(0 - width, 2) + Math.pow(0 - height, 2));
         visual = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-        value = visual;
+        value = gg * visual;
 
         //256 * visual/normalizer; //0-256 arası bir heureistic deger doner.  
-        double xy = visual * gg / normalizer;
+        //double xy = visual * gg / normalizer;
         return value;
     }
 
@@ -273,7 +273,7 @@ public class heaplessAStar {
                         && //VE Cocuk Node legal bir adresteyse
                         track.pos.x < width && track.pos.y < height) {
                     track.g = current.g + g(track.pos);
-                    track.h = h(track.pos, track.g);
+                    track.h = h(track.pos, g(track.pos));
                     track.f = track.g + track.h;
                     boolean breakOut = false; //Dongu kirma degiskeni.
 

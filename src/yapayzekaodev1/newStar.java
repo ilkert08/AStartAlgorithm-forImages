@@ -48,7 +48,7 @@ public class newStar {
         int pixel;
         pixel = img.getRGB(child.x, child.y);
         int r = (pixel >> 16) & 0xff;
-
+        
         // get green 
         // int g = (pixel >> 8) & 0xff;
         // get blue 
@@ -59,18 +59,40 @@ public class newStar {
     private double h(Point child, Double gg) {
         double value;
         double normalizer;
-        double visual;
-        int x1 = child.x;
-        int x2 = End.x;
-        int y1 = child.y;
-        int y2 = End.y;
-        normalizer = Math.sqrt(Math.pow(0 - width, 2) + Math.pow(0 - height, 2));
+        double visual; 
+        double maxValue;
+        int x0 = Start.x; int x1 = child.x;  int x2 = End.x;
+        int y0 = Start.y; int y1 = child.y;  int y2 = End.y;
+        
+        /*//maxValue = Math.sqrt(Math.pow(x0 - x2, 2) + Math.pow(y0 - y2, 2));
         visual = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-        value = visual;
-
-        //256 * visual/normalizer; //0-256 arası bir heureistic deger doner.  
-        double xy = visual * gg / normalizer;
+        //maxValue *= 256;
+        value = visual * 100;
+        return value;*/
+        
+        visual = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+        /*
+        visual -> gg ise
+        256    -> x ?
+        => x = 256 * gg / visual
+        */
+        value = gg * visual; //256 * gg / visual;
         return value;
+
+
+
+
+
+
+        //normalizer = Math.sqrt(Math.pow(0 - width, 2) + Math.pow(0 - height, 2));
+        //visual = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+        //value = visual;
+        //value = 256 * visual/normalizer; //0-256 arası bir heureistic deger doner.  
+        //double xy = visual * gg / normalizer;
+        //return xy;  
+
+
+
     }
 
     private void setColor() {
@@ -211,9 +233,14 @@ public class newStar {
 
             currentList.add(current.pos);
             visited.add(current);
-
+            
+            
+            
+            
+            
+            
             ///////////Sonuc Bulunmasi Halinde Yapilan Tek seferlik islemler.
-            if (current.pos.equals(End)) { //Sonuç bulduysa
+            if (current.pos.equals(End)) { //Sonuç bulduysa             
                 endPrint();
                 return;           
             }
@@ -293,7 +320,7 @@ public class newStar {
                         && //VE Cocuk Node legal bir adresteyse
                         track.pos.x < width && track.pos.y < height) {
                     track.g = current.g + g(track.pos);
-                    track.h = h(track.pos, track.g);
+                    track.h = h(track.pos, g(track.pos));
                     track.f = track.g + track.h;
                     boolean breakOut = false; //Dongu kirma degiskeni.                    
                     for (int i = 0; i < notVisited.getSize(); i++) {

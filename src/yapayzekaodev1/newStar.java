@@ -53,7 +53,7 @@ public class newStar {
         // int g = (pixel >> 8) & 0xff;
         // get blue 
         //   int a = pixel & 0xff;
-        return r;
+        return 256-r;
     }
 
     private double h(Point child, Double gg) {
@@ -76,7 +76,7 @@ public class newStar {
         256    -> x ?
         => x = 256 * gg / visual
         */
-        value = gg * visual; //256 * gg / visual;
+        value = gg * visual; // gg / visual;
         return value;
 
 
@@ -187,7 +187,7 @@ public class newStar {
     public void algoRun() {
         System.out.println("Size" + notVisited.getSize());
         notVisited.insert(new Node(Start, 0, 0, 0));
-        int maxIter = 300000;  //10K
+        int maxIter = 500000;  //10K
         int iterNo = 0;
         System.out.println("Girdi mi");
 
@@ -198,7 +198,7 @@ public class newStar {
             Node current = notVisited.remove();
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
-            System.out.println("D1:" + duration);
+            //System.out.println("D1:" + duration);
             //notVisited.minHeap();
 
             /* for (int i = 0; i < notVisited.size(); i++) {
@@ -293,7 +293,7 @@ public class newStar {
 
             endTime = System.nanoTime();
             duration = (endTime - startTime);
-            System.out.println("D1.5:" + duration);
+            //System.out.println("D1.5:" + duration);
 
             int childIndex = 0;
             for (Node track : childeren) {
@@ -341,7 +341,7 @@ public class newStar {
                     childList.add(track.pos);
                     endTime = System.nanoTime();
                     duration = (endTime - startTime);
-                    System.out.println("D3:" + duration);
+                    //System.out.println("D3:" + duration);
                 }
 
             }

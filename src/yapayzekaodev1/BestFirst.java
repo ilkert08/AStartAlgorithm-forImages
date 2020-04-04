@@ -15,6 +15,8 @@ public class BestFirst {
     private int height;
     BufferedImage img = null;
     private ArrayList<Node> list;
+    private minHeapforBestFirst list2;
+    Node endNode;
 
     public BestFirst() {
 
@@ -23,7 +25,9 @@ public class BestFirst {
     public BestFirst(Point Start, Point End) {
         this.End = End;
         this.Start = Start;
+        endNode = null;
         list = new ArrayList<>();
+        list2 = new minHeapforBestFirst(100000);
         fileWorks();
     }
 
@@ -43,7 +47,6 @@ public class BestFirst {
         System.out.println("IMG" + width + ".." + height);
 
     }
-
 
     private double h(Point child) {
         double value;
@@ -88,7 +91,7 @@ public class BestFirst {
                 if (list.get(j).h < list.get(index).h) {
                     index = j;
                 }
-            } 
+            }
             Node temp = list.get(index);
             list.set(index, list.get(i));
             list.set(i, temp);
@@ -96,13 +99,96 @@ public class BestFirst {
         return list;
     }
 
+    public void print() {
+        BufferedImage img2 = null;
+        File f = null;
+        try {
+            f = new File("red.png");
+            img2 = ImageIO.read(f);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+        int a = 255;
+        int r = 100;
+        int g = 100;
+        int b = 100;
+
+        //set the pixel value 
+        int p = (a << 24) | (r << 16) | (g << 8) | b;
+        Point pop;
+
+        Node tempNode = endNode;
+        while (tempNode != null) {
+            pop = tempNode.pos;
+            img2.setRGB(pop.x, pop.y, p);
+            tempNode = tempNode.parent;
+        }
+
+        //write image 
+        try {
+            f = new File("bestfirst.png");
+            ImageIO.write(img2, "png", f);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+    
+        public void printforHeap() {
+        BufferedImage img2 = null;
+        File f = null;
+        try {
+            f = new File("red.png");
+            img2 = ImageIO.read(f);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+        int a = 255;
+        int r = 100;
+        int g = 100;
+        int b = 100;
+
+        //set the pixel value 
+        int p = (a << 24) | (r << 16) | (g << 8) | b;
+        Point pop;
+
+        Node tempNode = endNode;
+        while (tempNode != null) {
+            pop = tempNode.pos;
+            img2.setRGB(pop.x, pop.y, p);
+            tempNode = tempNode.parent;
+        }
+
+        //write image 
+        try {
+            f = new File("bestfirstwithheap.png");
+            ImageIO.write(img2, "png", f);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
     public void algoRun() {
         boolean found = false;
         Node startNode = new Node(Start);
         list.add(startNode);
-        Node endNode = null;
+        endNode = null;
         while (found != true && list.size() != 0) {
-            Node current = list.remove(0);
+            Node current = list.get(0);
+            int index = 0;
+            for (int i = 0; i < list.size(); i++) {
+                if(list.get(i).h < current.h){
+                    current = list.get(i);
+                    index = i;
+                }             
+            }
+            
+            list.remove(index);
+            
+            
+            
+            
             if (current.pos.equals(End)) {
                 found = true;
                 endNode = current;
@@ -114,16 +200,41 @@ public class BestFirst {
                 child.parent = current;
                 list.add(child);
             }
-            sortArray();
+            //sortArray();
         }
         Node tempNode = endNode;
-        while(tempNode != null){
-            System.out.println("element:"+tempNode.pos);
+        while (tempNode != null) {
+            System.out.println("element:" + tempNode.pos);
             tempNode = tempNode.parent;
         }
-        
-        
-        
+        print();
+
     }
 
+    public void algoRunWithHeap() {
+        boolean found = false;
+        Node startNode = new Node(Start);
+        list.add(startNode);
+        endNode = null;
+        while (found != true && !list.isEmpty()) {               
+            Node current = list2.remove();
+            if (current.pos.equals(End)) {
+                found = true;
+                endNode = current;
+            }
+
+            Node[] childs = childNode(current);
+            for (Node child : childs) {
+                child.h = h(child.pos);
+                child.parent = current;
+                list2.insert(child);
+            }        
+        }
+        Node tempNode = endNode;
+        while (tempNode != null) {
+            System.out.println("element:" + tempNode.pos);
+            tempNode = tempNode.parent;
+        }
+        printforHeap();
+    }
 }

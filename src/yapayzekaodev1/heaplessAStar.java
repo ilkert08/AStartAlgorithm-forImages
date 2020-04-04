@@ -55,7 +55,7 @@ public class heaplessAStar {
 
         // get blue 
         int a = pixel & 0xff;
-        return r;
+        return 256 - r;
     }
 
     private double h(Point child, Double gg) {
@@ -170,6 +170,65 @@ public class heaplessAStar {
         System.out.println("");
     }
 
+    private void sortArray() {
+        Double min = notVisited.get(0).f;
+        int index;
+        int size = notVisited.size();
+
+        // One by one move boundary of unsorted subarray  
+        for (int i = 0; i < size - 1; i++) {
+            // Find the minimum element in unsorted array  
+            index = i;
+            for (int j = i + 1; j < size; j++) {
+                if (notVisited.get(j).f < notVisited.get(index).f) {
+                    index = j;
+                }
+            }
+            Node temp = notVisited.get(index);
+            notVisited.set(index, notVisited.get(i));
+            notVisited.set(i, temp);
+        }
+    }
+
+    int partition(int low, int high) {
+        Node pivot = notVisited.get(high);
+        int i = (low - 1); // index of smaller element 
+        for (int j = low; j < high; j++) {
+            // If current element is smaller than the pivot 
+            if (notVisited.get(j).f < pivot.f) {
+                i++;
+
+                // swap arr[i] and arr[j] 
+                Node temp = notVisited.get(i);
+                notVisited.set(i, notVisited.get(j));
+                notVisited.set(j, temp);
+            }
+        }
+
+        // swap arr[i+1] and arr[high] (or pivot) 
+        Node temp = notVisited.get(i+1);
+        notVisited.set(i+1, notVisited.get(high));
+        notVisited.set(high, temp);
+        return i + 1;
+    }
+
+    /* The main function that implements QuickSort() 
+      arr[] --> Array to be sorted, 
+      low  --> Starting index, 
+      high  --> Ending index */
+    void sort(int low, int high) {
+        if (low < high) {
+            /* pi is partitioning index, arr[pi] is  
+              now at right place */
+            int pi = partition(low, high);
+
+            // Recursively sort elements before 
+            // partition and after partition 
+            sort(low, pi - 1);
+            sort(pi + 1, high);
+        }
+    }
+
     public ArrayList<Point> currentList = new ArrayList<>();
     public ArrayList<Point> childList = new ArrayList<>();
 
@@ -179,23 +238,27 @@ public class heaplessAStar {
         notVisited.get(0).g = 0;
         notVisited.get(0).h = 0;
         notVisited.get(0).f = 0;
-        int maxIter = 300000;  //10K
+        int maxIter = 500000;  //10K
         int iterNo = 0;
 
         while (notVisited.size() > 0) {
             iterNo++;
             System.out.println("Iter:" + iterNo);
+
+            //sortArray(); // Selection sort!
+            //sort(0, notVisited.size()-1);//QuickSort
             Node current = notVisited.get(0);
             int currentIndex = 0;
 
-            for (int i = 0; i < notVisited.size(); i++) {
+            
+           for (int i = 0; i < notVisited.size(); i++) {
                 if (notVisited.get(i).f < current.f) {
+                   // System.out.println("Current:"+current.f +"get(i):"+notVisited.get(i).f+"i"+i);
                     current = notVisited.get(i);
                     currentIndex = i;
                 }
             }
-
-            printCurrent(current);
+            //printCurrent(current);
             currentList.add(current.pos);
 
             /////////MAX ITERATION SITUATION///////////
@@ -289,7 +352,7 @@ public class heaplessAStar {
                         continue;
                     } //notVisited'ta varsa continue.
 
-                    System.out.println("TRACK:" + track.pos);
+                    //System.out.println("TRACK:" + track.pos);
                     track.parent = current;
                     notVisited.add(track);
                     childList.add(track.pos);
